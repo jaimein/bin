@@ -1,15 +1,13 @@
 #!/bin/bash
 
+### Script para realizar una configuracion inicial
+### /etc/hosts y /etc/network/interfaces
+
 function nombresestaticos() {
 
-	# PATH TO YOUR HOSTS FILE
+	# Ruta del fichero
 	ETC_HOSTS=/etc/hosts
 
-	# DEFAULT IP FOR HOSTNAME
-	#IP="127.0.0.1"
-
-	# Hostname to add/remove.
-	#HOSTNAME=$1
 
 	function titulonomest() {
 
@@ -46,7 +44,7 @@ function nombresestaticos() {
    		
 	    if [ -f /etc/hosts ] ###Comprueba si existe el fichero
 		    then ### Si existe
-				TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
+				TIMESTAMP=$(date "+%Y%m%d_%H%M%S") ### Variable fecha
 		        cp /etc/hosts /etc/hosts.original-$TIMESTAMP ###Hace un backup
 		        if [ $? -eq 0 ] ###Comprueba si ha funcionado bien
 			        then ### Si se ha hecho el backup bien
@@ -114,7 +112,7 @@ function nombresestaticos() {
 function ipestatica () {
 
 
-	function titulo() {
+	function titulo() { ###Crea el titulo
 	    clear
     	echo "****************************************************"
     	echo "*   CONFIGURADOR DE DIRECCIONAMIENTO IP ESTÁTICO   *"
@@ -125,28 +123,18 @@ function ipestatica () {
           
 	    echo "Realizando copias de seguridad..."
    
-    	if [ -f /etc/network/interfaces ]
-    		then
-    		    cp /etc/network/interfaces /etc/network/interfaces.original
-    		    if [ $? -eq 0 ]
+    	if [ -f /etc/network/interfaces ] ###Comprueba si existe el fichero
+    		then #Si existe
+				TIMESTAMP=$(date "+%Y%m%d_%H%M%S") ### Variable fecha
+    		    cp /etc/network/interfaces /etc/network/interfaces.original-$TIMESTAMP ###Hace un backup
+    		    if [ $? -eq 0 ] ###Comprueba si se ha realizado corectamente e informa
     			    then
     			        echo "El archivo interfaces ha sido salvaguardado con éxito."
     			    else
     			        echo "Error al salvaguardar el archivo interfaces."
     		    fi
     	fi
-
-    	if [ -f /etc/resolv.conf ]
-    		then
-    		    cp /etc/resolv.conf /etc/resolv_original.conf
-    			    if [ $? -eq 0 ]
-    				    then
-    				        echo "El archivo resolv.conf ha sido salvaguardado con éxito."
-    				    else
-    				        echo "Error al salvaguardar el archivo resolv.conf."
-    			    fi
-    	fi
-   
+  
 	}
 
 
@@ -194,14 +182,7 @@ function ipestatica () {
 	# PROGRAMA PRINCIPAL
 	#--------------------
 
-	titulo
-
-
-	if [ $LOGNAME != "root" ]
-	then
-	    read -p "Lo siento, este script debe ser ejecutado con privilegios de root."
-	    exit 1   
-	fi
+	titulo ### LLama a la funcion titulo
 
 	#Mostramos los interfaces de red
 	titulo
@@ -212,6 +193,7 @@ function ipestatica () {
 	done
 	echo "-----------------------------------------------------"
 
+	### Elegimos la interfaz deseada y comprobamos si es correcta
 	nic_elegida=""
 	while [ "$nic_elegida" == "" ]
 		do
@@ -234,6 +216,7 @@ function ipestatica () {
 		    exit 1
 	fi
 
+	### Mostramos el nombre de la interfaz elegida y pedimos datos
 
 	echo "La interfaz elegida es: $nic_elegida"
 	read -p "Introduce la nueva dirección ip estática: " ip
@@ -243,8 +226,8 @@ function ipestatica () {
 	read -p "Introduce el DNS 2º: " dns2
 	echo
 	read -p "Pulse una tecla para continuar."
-	titulo
 
+	### Pedimos confirmación para grabar los datos
 	respuesta=""
 	while [ "$respuesta" == "" ]
 		do
@@ -263,7 +246,7 @@ function ipestatica () {
 }
 
 function selecion() {
-
+	
     clear ### Limpia pantalla
 	### Muestra el titulo del script
     echo "****************************************************"
@@ -291,4 +274,15 @@ function selecion() {
 	esac
 }
 
-selecion
+function permisos(){
+	### Comprueba si eres root
+	if [ $LOGNAME != "root" ]
+		then
+	 	   read -p "Lo siento, este script debe ser ejecutado con privilegios de root."
+		   exit 0  
+	fi
+	### Llamamos a la funcion para que se ejecute el script
+	selecion
+}
+
+permisos ### LLamamos a la funcion inicial
