@@ -25,17 +25,6 @@ function copiaseg()
         fi
     fi
 
-    if [ -f /etc/resolv.conf ]
-    then
-        cp /etc/resolv.conf /etc/resolv_original.conf
-        if [ $? -eq 0 ]
-        then
-            echo "El archivo resolv.conf ha sido salvaguardado con éxito."
-        else
-            echo "Error al salvaguardar el archivo resolv.conf."
-        fi
-    fi
-   
 }
 
 
