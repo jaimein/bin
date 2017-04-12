@@ -1,0 +1,6 @@
+[version]
+name-with-version=PaperCut MF 15.0 (Build 31930)
+name=PaperCut MF
+version-major=15
+version-minor=0
+version-build=31930

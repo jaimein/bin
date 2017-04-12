@@ -1,0 +1,49 @@
+#!/bin/bash
+#1ª Crear csv separado por # con 4 campos(nombre#pueblo#correo#provincia) IMPORTANTE!! NO PUEDEN HABER ; : , # EN TODO EL FICHERO
+#2º Introducir el nombre del fichero csv y luego el grupo(categoria) al que pertenece
+total=1
+echo "Introduce un nombre de archivo"
+read archivo
+echo ""
+echo ""
+echo "Introduce grupo al que pertenecen los contactos"
+read grupo
+echo ""
+echo ""
+lineas=`wc -l $archivo | cut -f1 -d " " `
+
+while [ $total -le $lineas ]
+do
+
+nombre=`awk NR==$total $archivo | cut -f1 -d"#" `
+correo=`awk NR==$total  $archivo | cut -f3 -d"#"`
+pueblo=`awk NR==$total $archivo | cut -f2 -d"#"`
+provincia=`awk NR==$total $archivo | cut -f4 -d"#"`
+
+ 
+
+echo "BEGIN:VCARD" >> $grupo.vcf
+
+echo "VERSION:3.0" >> $grupo.vcf
+
+echo "N:;"$nombre";;;" >> $grupo.vcf
+
+echo "FN:"$nombre""  >> $grupo.vcf
+
+echo "EMAIL;TYPE=INTERNET;TYPE=HOME:"$correo"" >> $grupo.vcf
+
+echo "ADR;TYPE=home:;;;"$pueblo";$provincia;;ESPAÑA" >> $grupo.vcf
+
+echo "CATEGORIES:$grupo" >> $grupo.vcf
+
+echo "END:VCARD"  >> $grupo.vcf
+
+      				
+total=`expr $total + 1`
+done
+
+
+echo ""
+echo ""
+echo ""
+exit 0
